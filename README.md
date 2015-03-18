@@ -90,8 +90,8 @@ with
 
 This will automatically create a series of methods based on your step names. Each step will get two methods
 
-    `<step_name>_step_show`
-    `<step_name>_step_update`
+    <step_name>_step_show
+    <step_name>_step_update
 
 so in our case we'll have four methods total `create_step_show`, `create_step_update`,
 `invite_step_show`, `invite_step_update`.
@@ -115,7 +115,7 @@ This will create routes for each of your steps. These will be named routes, name
 
 So for the create_step_update method from our example above, it would be this
 
-    `update_create_step_for_event`
+    update_create_step_for_event
 
 
 
