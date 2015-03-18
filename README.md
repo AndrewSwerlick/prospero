@@ -27,23 +27,23 @@ defining the logic to move through them, and provides some helpers to quickly cr
 
 Wizards are defined in a module. To create a new wizard run the provided generator
 
-  rails g prospero:wizard create_event
+    rails g prospero:wizard create_event
 
 This will create a new file in `app/wizards` called `create_event.rb`. It will something like this
 
-  module CreateEvent
-    include Prospero::Builder
+    module CreateEvent
+      include Prospero::Builder
 
-  end
+    end
 
 This is your wizard definition. Wizards are made up of steps, so most of your wizard
 code will consist of you describe the steps using the step method
 
-  module CreateEvent
-    step :create
+    module CreateEvent
+      step :create
 
-    step :invite
-  end
+      step :invite
+    end
 
 each call to step will define a new step in the wizard process with the name provided by
 the first argument.
@@ -54,27 +54,27 @@ in `create_event.rb` you'll want to create a corresponding form. The form should
 inherits from `Reform::Form`, which is from the excellent [Reform gem](https://github.com/apotonick/reform).
 You can also have the generator create these form objects by running
 
-  rails g prospero:wizard create_event create invite
+    rails g prospero:wizard create_event create invite
 
 ### Forms
 The form files are where you define step specific validation and persistence logic. As noted the forms are
 built using Reform(https://github.com/apotonick/reform), so you can find detailed documentation there, but we'll
 take a brief look here. For the wizard shown above, our first form might look like this
 
-  module CreateEvent
-    class Create < Reform::Form
-      property :title
-      property :start_date
+    module CreateEvent
+      class Create < Reform::Form
+        property :title
+        property :start_date
 
-      validates :title, presence: true
-      validate :start_date_cannot_be_in_the_past
+        validates :title, presence: true
+        validate :start_date_cannot_be_in_the_past
 
-      def start_date_cannot_be_in_the_past
-        errors.add(:start_date, "can't be in the past") if
-          !start_date.blank? and expiration_date < Date.today
+        def start_date_cannot_be_in_the_past
+          errors.add(:start_date, "can't be in the past") if
+            !start_date.blank? and expiration_date < Date.today
+        end
       end
     end
-  end
 
 We define what fields will be on our form using `::property`. Then we use standard active record
 validations to setup our validation logic.
@@ -83,15 +83,15 @@ validations to setup our validation logic.
 Once you're done defining your wizard, you can include it in your controller just like a normal module
 with
 
-class EventsController < ApplicationController
-  include CreateEvent
-  # other controller code...
-end
+    class EventsController < ApplicationController
+      include CreateEvent
+      # other controller code...
+    end
 
 This will automatically create a series of methods based on your step names. Each step will get two methods
 
-  `<step_name>_step_show`
-  `<step_name>_step_update`
+    `<step_name>_step_show`
+    `<step_name>_step_update`
 
 so in our case we'll have four methods total `create_step_show`, `create_step_update`,
 `invite_step_show`, `invite_step_update`.
@@ -107,15 +107,15 @@ if validation passes, or return the user to the previous step with error message
 Once you've included your wizard in your controller, the last step is to register routes for the new methods
 your wizard has created, go into `config/routes.rb` and add the following
 
-  `CreateEvent.register_routes_for "events"`
+    `CreateEvent.register_routes_for "events"`
 
 This will create routes for each of your steps. These will be named routes, named using the following convention.
 
-  <action>_<step_name>_step_for_<controller_singular_name>
+    <action>_<step_name>_step_for_<controller_singular_name>
 
 So for the create_step_update method from our example above, it would be this
 
-  `update_create_step_for_event`
+    `update_create_step_for_event`
 
 
 
