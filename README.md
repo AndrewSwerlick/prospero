@@ -58,7 +58,7 @@ You can also have the generator create these form objects by running
 
 ### Forms
 The form files are where you define step specific validation and persistence logic. As noted the forms are
-built using Reform(https://github.com/apotonick/reform), so you can find detailed documentation there, but we'll
+built using [Reform](https://github.com/apotonick/reform), so you can find detailed documentation there, but we'll
 take a brief look here. For the wizard shown above, our first form might look like this
 
     module CreateEvent
