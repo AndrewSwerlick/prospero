@@ -107,13 +107,16 @@ if validation passes, or return the user to the previous step with error message
 Once you've included your wizard in your controller, the last step is to register routes for the new methods
 your wizard has created, go into `config/routes.rb` and add the following
 
-    `CreateEvent.register_routes_for "events"`
+    CreateEvent.register_routes_for "events"
 
 This will create routes for each of your steps. These will be named routes, named using the following convention.
 
     <action>_<step_name>_step_for_<controller_singular_name>
 
-So for the create_step_update method from our example above, it would be this
+The routes will point to the corresponding step on the `EventsController` with a get action for the
+show method and a post action for the update method
+
+So for the create_step_update method from our example above, the route name would be
 
     update_create_step_for_event
 
