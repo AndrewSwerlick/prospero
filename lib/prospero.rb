@@ -1,5 +1,6 @@
 require "prospero/version"
+require 'bundler/setup'
 
 module Prospero
-  # Your code goes here...
+  autoload :Wizard, 'prospero/wizard'
 end
