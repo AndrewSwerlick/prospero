@@ -17,20 +17,18 @@ module Prospero
       builder = self
       base.class_exec(configuration) do |config|
         @wizard_config = config
-      end
 
-      steps.each do |st|
-        base.send :define_method, st[:show_name] do
+        steps.each do |st|
+          define_method st[:show_name] do
+          end
+
+          define_method, st[:update_name] do
+            action = builder.next_action(st[:update_name])
+            path = url_for(:controller => controller_name, :action => action, :id => params[:id])
+            redirect_to path
+          end
         end
-
-        base.send :define_method, st[:update_name] do
-          action = builder.next_action(st[:update_name])
-          path = url_for(:controller => controller_name, :action => action, :id => params[:id])
-          redirect_to path
-        end
-
       end
-
     end
 
     private
