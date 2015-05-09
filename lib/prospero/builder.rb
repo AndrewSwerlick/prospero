@@ -28,8 +28,14 @@ module Prospero
             if form.validate(params)
               form.save
               redirect_to path
-            end            
+            end
           end
+        end
+
+        define_method "current" do
+          step = step_map[current_step] || steps.first
+          path = url_for(:controller => controller_name, :action => step[:show_name], :id => params[:id])
+          redirect_to path
         end
       end
     end

@@ -14,23 +14,39 @@ module Prospero
       @form ||= form_for(action_name)
     end
 
+    def current_step
+    end
+
     def form_for(action)
-      action_map = wizard_configuration[:steps].inject({}) do |hash, step|
-        hash[step[:show_name]] = step
-        hash[step[:update_name]] = step
-        hash
-      end
       step = action_map[action.to_s]
       name = step[:base_name]
       form_class = step[:form] || self.class.const_get("#{name}".classify)
       form_class.new(model)
     end
 
+    def action_map
+      @action_map ||= wizard_configuration[:steps].inject({}) do |hash, step|
+        hash[step[:show_name]] = step
+        hash[step[:update_name]] = step
+        hash
+      end
+    end
+
+    def step_map
+      @step_map ||= wizard_configuration[:steps].inject({}) do |hash, step|
+        hash[step[:base_name]] = step
+        hash
+      end
+    end
+
     def next_action
-      steps = wizard_configuration[:steps].sort_by {|s| s[:order]}
-      current = steps.find{|s| s[:update_name] == action_name}
+      current = action_map[action_name]
       next_step = steps[current[:order] + 1 ]
       next_step ? next_step[:show_name] : current[:show_name]
+    end
+
+    def steps
+      @steps ||= wizard_configuration[:steps].sort_by {|s| s[:order]}
     end
 
     module ClassMethods
@@ -50,6 +66,8 @@ module Prospero
             get "#{controller}/#{step[:base_name]}/:id", to: "#{controller}##{step[:show_name]}"
             post "#{controller}/#{step[:base_name]}/:id", to: "#{controller}##{step[:update_name]}"
           end
+
+          get "#{controller}/current/:id", to: "#{controller}#current"
         end
       end
     end

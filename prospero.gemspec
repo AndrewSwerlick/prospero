@@ -22,6 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
   spec.add_development_dependency "pry-byebug"
   spec.add_development_dependency "reform"
+  spec.add_development_dependency "minitest-around"
 
   spec.add_runtime_dependency 'actionpack'
   spec.add_runtime_dependency 'activesupport'
