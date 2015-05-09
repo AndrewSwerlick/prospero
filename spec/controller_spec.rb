@@ -16,8 +16,10 @@ module TestWizard
 end
 
 class Record
+  attr_reader :saved
+
   def save
-    
+    @saved = true
   end
 end
 
@@ -30,7 +32,7 @@ class TestController < ActionController::Base
   include TestWizard
 
   def model
-    Record.new
+    @model ||= Record.new
   end
 
   protected
@@ -54,6 +56,10 @@ describe TestController do
 
     it "redirects to the next step" do
       assert_redirected_to "/test/foo/1"
+    end
+
+    it "has updated the model" do
+      @controller.model.saved.must_equal true
     end
   end
 end
