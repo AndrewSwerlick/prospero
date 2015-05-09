@@ -43,7 +43,7 @@ describe mod do
         let(:action){ :create_step_show }
 
         it "it infers the form class based on the name" do
-          form.must_be_kind_of klass::CreateStepForm
+          form.must_be_kind_of klass::Create
         end
       end
 
@@ -51,7 +51,7 @@ describe mod do
         let(:action){ :create_step_update }
 
         it "it infers the form class based on the name" do
-          form.must_be_kind_of klass::CreateStepForm
+          form.must_be_kind_of klass::Create
         end
       end
     end
