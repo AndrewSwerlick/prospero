@@ -25,7 +25,10 @@ module Prospero
 
           define_method st[:update_name] do
             path = url_for(:controller => controller_name, :action => next_action, :id => params[:id])
-            redirect_to path
+            if form.validate(params)
+              form.save
+              redirect_to path
+            end            
           end
         end
       end

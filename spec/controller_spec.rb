@@ -7,6 +7,18 @@ module TestWizard
     step :create
     step :foo
   end
+
+  class Create < Reform::Form
+  end
+
+  class Foo < Reform::Form
+  end
+end
+
+class Record
+  def save
+    
+  end
 end
 
 Prospero::Routes.draw do
@@ -16,6 +28,10 @@ end
 class TestController < ActionController::Base
   include Prospero::Routes.url_helpers
   include TestWizard
+
+  def model
+    Record.new
+  end
 
   protected
 
