@@ -9,6 +9,7 @@ module Prospero
 
     def build_in(base)
       base.class_exec(configuration, self) do |config, builder|
+
         define_singleton_method "wizard_configuration" do
           config
         end

@@ -10,6 +10,10 @@ module Prospero
       base.extend ClassMethods
     end
 
+    def form
+      @form ||= form_for(action_name)
+    end
+
     def form_for(action)
       action_map = wizard_configuration[:steps].inject({}) do |hash, step|
         hash[step[:show_name]] = step
@@ -30,6 +34,10 @@ module Prospero
     end
 
     module ClassMethods
+      def included(base)
+        base.helper_method :form
+      end
+
       def configuration(&block)
         config = DSL.new.tap {|d| d.instance_exec(&block) }.configuration
         Builder.new(config).build_in(self)
