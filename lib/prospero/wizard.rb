@@ -10,6 +10,18 @@ module Prospero
       base.extend ClassMethods
     end
 
+    def form_for(action)
+      action_map = wizard_configuration[:steps].inject({}) do |hash, step|
+        hash[step[:show_name]] = step
+        hash[step[:update_name]] = step
+        hash
+      end
+      step = action_map[action.to_s]
+      name = step[:base_name]
+      form_class = step[:form] || self.class.const_get("#{name}_step_form".classify)
+      form_class.new(model)
+    end
+
     def next_action
       steps = wizard_configuration[:steps].sort_by {|s| s[:order]}
       current = steps.find{|s| s[:update_name] == action_name}
