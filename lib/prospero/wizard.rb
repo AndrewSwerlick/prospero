@@ -14,6 +14,9 @@ module Prospero
       @form ||= form_for(action_name)
     end
 
+    def after_step_save
+    end
+
     def current_step
     end
 
@@ -50,10 +53,6 @@ module Prospero
     end
 
     module ClassMethods
-      def included(base)
-        base.helper_method :form
-      end
-
       def configuration(&block)
         config = DSL.new.tap {|d| d.instance_exec(&block) }.configuration
         Builder.new(config).build_in(self)

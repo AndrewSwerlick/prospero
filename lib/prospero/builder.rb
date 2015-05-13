@@ -10,6 +10,10 @@ module Prospero
     def build_in(base)
       base.class_exec(configuration, self) do |config, builder|
 
+        define_singleton_method "included" do |base|
+          base.send(:helper_method, :form)
+        end
+
         define_singleton_method "wizard_configuration" do
           config
         end
@@ -27,6 +31,7 @@ module Prospero
             path = url_for(:controller => controller_name, :action => next_action, :id => params[:id])
             if form.validate(params)
               form.save
+              after_step_save
               redirect_to path
             end
           end
