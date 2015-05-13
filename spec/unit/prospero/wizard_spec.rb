@@ -1,12 +1,10 @@
 require 'spec_helper'
 
-mod = Prospero::Wizard
-
-describe mod do
+describe Prospero::Wizard do
   let(:klass) do
     k = Class.new
     k.class_exec(config_block) do |config|
-      include mod
+      include Prospero::Wizard
 
       configuration &config
 

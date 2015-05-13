@@ -11,7 +11,7 @@ module Prospero
       base.class_exec(configuration, self) do |config, builder|
 
         define_singleton_method "included" do |base|
-          base.send(:helper_method, :form)
+          base.send(:helper_method, :form) if base.kind_of? ActionController::Base
         end
 
         define_singleton_method "wizard_configuration" do

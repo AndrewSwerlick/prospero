@@ -5,8 +5,8 @@ class MockAdapter
     @steps = []
   end
 
-  def persist_step_data(params)
-    steps << OpenStruct.new(params)
+  def persist_step_data(params, next_action)
+    steps << OpenStruct.new(params.merge(continued_to: next_action))
   end
 
   def find_by_model_id(id)
