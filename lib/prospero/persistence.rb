@@ -29,8 +29,6 @@ module Prospero
       form.extend ParamMethods
     end
 
-
-
     class << self
       attr_reader :adapter
 
