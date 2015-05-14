@@ -24,13 +24,14 @@ describe Prospero::Persistence do
       define_method "params" do
         param_hash
       end
+
     end
     k
   end
 
   let(:instance){klass.new}
   let(:adapter) { MockAdapter.new }
-  let(:params){ { id: 1, create: {foo:"bar" } } }
+  let(:params){ { id: 1, blah: {foo:"bar" } } }
 
   before {Prospero::Persistence.use_adapter adapter}
 
@@ -44,10 +45,29 @@ describe Prospero::Persistence do
     end
 
     describe "when there are steps persisted for the current model" do
-      before {adapter.steps << OpenStruct.new(id: 1, )}
+      before {adapter.persist_step_data(:create, nil, id: 1, blah: {bar: "foo"}) }
 
       it "returns a merged hash with params from both" do
-        skip
+        expected = {
+          blah: {
+            bar: "foo",
+            foo: "bar"
+          }
+        }
+        result.must_equal expected
+      end
+    end
+  end
+
+  describe ".params_for(step)" do
+    let(:step){:create}
+    let(:result){instance.params_for(step)}
+    describe "when there are steps persisted for the current model" do
+      before {adapter.persist_step_data(:create, nil, id: 1, blah: {bar: "foo"}) }
+
+      it "returns the step data" do
+        expected = {blah: {bar: "foo"}}
+        result.must_equal expected
       end
     end
   end

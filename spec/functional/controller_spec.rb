@@ -47,9 +47,10 @@ describe TestController do
       end
 
       describe "when the current_step is not defined" do
+        around {|test| @controller.stub :current_step, nil do test.call end}
         before {get :current, id: 1}
 
-        it "redirects to the current step" do
+        it "redirects to the first step" do
           assert_redirected_to "/test/create/1"
         end
       end
@@ -70,7 +71,7 @@ describe TestController do
       before { post :create_step_update, id: 1}
 
       it "creates a new wizard step entry for the model object with the method is called" do
-        adapter.find_by_model_id(1).count.must_equal 1
+        adapter.steps.select{|s| s.id == "1"}.count.must_equal 1
       end
     end
   end

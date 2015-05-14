@@ -18,6 +18,7 @@ module Prospero
     end
 
     def current_step
+      action_map[action_name][:base_name]
     end
 
     def form_for(action)
