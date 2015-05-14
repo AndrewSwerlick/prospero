@@ -13,6 +13,12 @@ describe Prospero::Persistence do
         step :create
         step :foo
       end
+
+      class self::Create < Reform::Form
+      end
+
+      class self::Foo < Reform::Form
+      end
     end
   end
 
@@ -23,6 +29,10 @@ describe Prospero::Persistence do
 
       define_method "params" do
         param_hash
+      end
+
+      def model
+        OpenStruct.new(id: 1)
       end
 
     end
@@ -69,6 +79,18 @@ describe Prospero::Persistence do
         expected = {blah: {bar: "foo"}}
         result.must_equal expected
       end
+    end
+  end
+
+  describe ".form_for(step)" do
+    let(:result){ instance.form_for(:create_step_show) }
+
+    it "returns a form with the .all_params method included" do
+      result.respond_to?(:all_params).must_equal true
+    end
+
+    it "returns a form with the .params_form method included" do
+      result.respond_to?(:params_for).must_equal true
     end
   end
 end

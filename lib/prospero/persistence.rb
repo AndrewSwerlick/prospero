@@ -2,6 +2,18 @@ require 'active_support/core_ext/hash/deep_merge'
 
 module Prospero
   module Persistence
+    module ParamMethods
+      def all_params
+        previous_params = adapter.all_params_for(model.id)
+        previous_params.deep_merge(params).except(:id)
+      end
+
+      def params_for(step)
+        adapter.params_for(step, model.id)
+      end
+    end
+
+    include ParamMethods
 
     def adapter
       Prospero::Persistence.adapter
@@ -12,14 +24,12 @@ module Prospero
       super
     end
 
-    def all_params
-      previous_params = adapter.all_params_for(params[:id])
-      previous_params.deep_merge(params).except(:id)
+    def form_for(step)
+      form = super
+      form.extend ParamMethods
     end
 
-    def params_for(step)
-      adapter.params_for(step, params[:id])
-    end
+
 
     class << self
       attr_reader :adapter
