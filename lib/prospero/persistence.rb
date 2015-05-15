@@ -2,6 +2,8 @@ require 'active_support/core_ext/hash/deep_merge'
 
 module Prospero
   module Persistence
+    autoload :ActiveRecordAdapter, 'prospero/persistence/active_record_adapter'
+
     module ParamMethods
       def all_params
         previous_params = adapter.all_params_for(model.id)
@@ -20,7 +22,7 @@ module Prospero
     end
 
     def after_step_save
-      adapter.persist_step_data(current_step, next_action, params)
+      adapter.persist_step_data(params[:id], current_step, next_action, params)
       super
     end
 

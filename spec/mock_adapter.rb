@@ -5,8 +5,8 @@ class MockAdapter
     @steps = []
   end
 
-  def persist_step_data(step_name, next_action, params)
-    steps << OpenStruct.new(name: step_name, id: params[:id], params: params.except(:id), continued_to: next_action)
+  def persist_step_data(id, step_name, next_action, params)
+    steps << OpenStruct.new(name: step_name, id: id, params: params.except(:id), continued_to: next_action)
   end
 
   def all_params_for(id)

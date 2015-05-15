@@ -26,4 +26,6 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'actionpack'
   spec.add_runtime_dependency 'activesupport'
+  spec.add_runtime_dependency 'activerecord'
+  spec.add_runtime_dependency 'sqlite3'
 end

@@ -55,7 +55,7 @@ describe Prospero::Persistence do
     end
 
     describe "when there are steps persisted for the current model" do
-      before {adapter.persist_step_data(:create, nil, id: 1, blah: {bar: "foo"}) }
+      before {adapter.persist_step_data(1, :create, nil, blah: {bar: "foo"}) }
 
       it "returns a merged hash with params from both" do
         expected = {
@@ -73,7 +73,7 @@ describe Prospero::Persistence do
     let(:step){:create}
     let(:result){instance.params_for(step)}
     describe "when there are steps persisted for the current model" do
-      before {adapter.persist_step_data(:create, nil, id: 1, blah: {bar: "foo"}) }
+      before {adapter.persist_step_data(1,:create, nil, blah: {bar: "foo"}) }
 
       it "returns the step data" do
         expected = {blah: {bar: "foo"}}
