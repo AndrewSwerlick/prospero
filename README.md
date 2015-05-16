@@ -56,7 +56,7 @@ each call to step will define a new step in the wizard process with the name pro
 the first argument.
 
 ### Forms
-Form objects are how Prospero handles validation and persistence logic for each step in your wizard. When the user edits or update's step data, Prospero loads up the associated form for that step. Out of the box, Prospero is optimized to use the excellent [Reform gem](https://github.com/apotonick/reform). from [Nick Sutterer](https://github.com/apotonick), but it will work with any object that exposes the following public methods
+Form objects are how Prospero handles validation and persistence logic for each step in your wizard. When the user edits or update's step data, Prospero loads up the associated form for that step. Out of the box, Prospero is optimized to use the excellent [Reform gem](https://github.com/apotonick/reform) from [Nick Sutterer](https://github.com/apotonick), but it will work with any object that exposes the following public methods
 
 1. `initialize(model)` - A constructor that takes in a single argument pointing to the model that this form will persist any data to.
 2. `model` - A no arg method which returns the passed in model
@@ -130,9 +130,9 @@ To use Prospero::Persistence, first we need to create a migration that will add 
 
 This will create a new migration in your `db/migrate/` folder. Then run
 
-   rake db:migrate
+    rake db:migrate
 
-To update your database. This will create a table named wizard_steps where we will store information about how user are progressing through a wizard
+to update your database. This will create a table named `wizard_steps` where we will store information about the individual steps as a model progresses through a wizard
 
 Once you've run the migration, you can use the Prospero::Persitence module. Here's an example
 
@@ -163,6 +163,11 @@ In addition to exposing these methods in your controller, Prospero also extends 
 ### Browsing to the current step
 
 The controller will have another new method called furthest_step, which will return the last step the user has completed. Prospero will also add a new route such that browsing to /{controller}/current/{id} will redirect the user to the next step after the furthest_step
+
+
+### Persistence without ActiveRecord
+
+Out of the box, Prospero is designed to work with ActiveRecord. Fortunately, all of the actual persistence related code is encapsulated in a single adapter class. If you aren't using ActiveRecord you can write a custom adapter and have Prospero use that instead. For information see [Custom Adapters](https://github.com/AndrewSwerlick/prospero/wiki/Custom-Adapters)
 
 ## Contributing
 
