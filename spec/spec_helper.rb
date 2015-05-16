@@ -10,8 +10,7 @@ require 'pry-byebug'
 require 'active_support'
 require 'action_controller'
 require 'action_controller/test_case'
-
-
+require 'rails/generators/test_case'
 
 Prospero::Routes = ActionDispatch::Routing::RouteSet.new
 
@@ -26,3 +25,4 @@ class ActiveSupport::TestCase
 end
 
 MiniTest::Spec.register_spec_type( /Controller$/,  ActionController::TestCase )
+MiniTest::Spec.register_spec_type( /^Rails::Generators/, Rails::Generators::TestCase)

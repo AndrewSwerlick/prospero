@@ -28,4 +28,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'activesupport'
   spec.add_runtime_dependency 'activerecord'
   spec.add_runtime_dependency 'sqlite3'
+  spec.add_runtime_dependency 'railties'
+
 end
