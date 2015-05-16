@@ -19,6 +19,7 @@ Or install it yourself as:
 ## Usage
 
 Prospero is a tool for quickly creating multi-step wizards in your rails app. Prospero differs from other wizard gems like wicked in a number of important ways.
+
 1. It creates a fully RESTfull wizard that exposes a unique url for every step
 2. It ensures the presentation logic of the wizard is completely removed from your model layer
 3. It allows for fine grained persistence control where you can build the record up as each step is performed, or you can only build your record once all the steps are completed.
