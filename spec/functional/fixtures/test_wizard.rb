@@ -1,6 +1,6 @@
 module TestWizard
   include Prospero::Wizard
-
+  
   configuration do
     step :create
     step :foo

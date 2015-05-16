@@ -18,10 +18,10 @@ Or install it yourself as:
 
 ## Usage
 
-Prospero lets you easily add wizards to your rails controllers to guide users
-through your a process.You can define a wizard in a single module and then include
-it any of your controllers. Prospero handles creating the controller methods,
-defining the logic to move through them, and provides some helpers to quickly create routes
+Prospero is a tool for quickly creating multi-step wizards in your rails app. Prospero differs from other wizard gems like wicked in a number of important ways.
+1. It creates a fully RESTfull wizard that exposes a unique url for every step
+2. It ensures the presentation logic of the wizard is completely removed from your model layer
+3. It allows for fine grained persistence control where you can build the record up as each step is performed, or you can only build your record once all the steps are completed.
 
 ### Defining your wizard
 
@@ -32,52 +32,44 @@ Wizards are defined in a module. To create a new wizard run the provided generat
 This will create a new file in `app/wizards` called `create_event.rb`. It will something like this
 
     module CreateEvent
-      include Prospero::Builder
+      include Prospero::Wizard
 
+      configuration do
+        # your code here...
+      end
     end
 
 This is your wizard definition. Wizards are made up of steps, so most of your wizard
 code will consist of you describe the steps using the step method
 
     module CreateEvent
-      step :create
+      include Prospero::Wizard
 
-      step :invite
+      configuration do
+        step :create
+        step :invite
+      end
     end
 
 each call to step will define a new step in the wizard process with the name provided by
 the first argument.
 
-In addition to the `create_event.rb` file, the generate will also create a new folder at
-`app/wizards/create_event`. This folder will hold your wizard forms. For each step you define
-in `create_event.rb` you'll want to create a corresponding form. The form should be a class that
-inherits from `Reform::Form`, which is from the excellent [Reform gem](https://github.com/apotonick/reform).
-You can also have the generator create these form objects by running
+### Forms
+Form objects are how Prospero handles validation and persistence logic for each step in your wizard. When the user edits or update's step data, Prospero loads up the associated form for that step. Out of the box, Prospero is optimized to use the excellent [Reform gem](https://github.com/apotonick/reform). from [Nick Sutterer](https://github.com/apotonick), but it will work with any object that exposes the following public methods
+
+1. `initialize(model)` - A constructor that takes in a single argument pointing to the model that this form will persist any data to.
+2. `model` - A no arg method which returns the passed in model
+3. `validate(params)` - A method that takes in a hash of parameters and validates that they represent a valid operation
+4. `errors` - A method that returns an ActiveModel::Errors collection of any validation errors
+5. `save` - A method that persists the data back to the model
+
+Prospero looks for form classes inside of the module where your wizard is defined. So in the example above, Prospero will look for the class CreateEvent::Create to generate the create form, and the class CreateEvent::Invite to generate the invite form.
+
+If you choose to create forms using the Reform library, follow the [Reform documentation](https://github.com/apotonick/reform) or our [Reform quickstart](https://github.com/AndrewSwerlick/prospero/wiki/Reform-quickstart). If you're using a different library or creating custom form objects, just ensure the methods above are available and behave as expected.
+
+If you use the generator to create your wizard, reform will automatically create a subfolder with the same name where you can store your form classes. You can even have the generator automatically stub out reform forms if you do this.
 
     rails g prospero:wizard create_event create invite
-
-### Forms
-The form files are where you define step specific validation and persistence logic. As noted the forms are
-built using [Reform](https://github.com/apotonick/reform), so you can find detailed documentation there, but we'll
-take a brief look here. For the wizard shown above, our first form might look like this
-
-    module CreateEvent
-      class Create < Reform::Form
-        property :title
-        property :start_date
-
-        validates :title, presence: true
-        validate :start_date_cannot_be_in_the_past
-
-        def start_date_cannot_be_in_the_past
-          errors.add(:start_date, "can't be in the past") if
-            !start_date.blank? and expiration_date < Date.today
-        end
-      end
-    end
-
-We define what fields will be on our form using `::property`. Then we use standard active record
-validations to setup our validation logic.
 
 ### Including in your controller
 Once you're done defining your wizard, you can include it in your controller just like a normal module
@@ -97,7 +89,7 @@ so in our case we'll have four methods total `create_step_show`, `create_step_up
 `invite_step_show`, `invite_step_update`.
 
 The `<step_name>_step_show` methods will be empty by default, but will allow you to define a view for your step
-in `app/view/<controller_name>/<step_name>_step_show`. The `<step_name>_step_update` however
+in `app/views/<controller_name>/<step_name>_step_show`. The `<step_name>_step_update` however
 will have all the logic necessary to update your model with the data from the step. It will load up
 a model based upon the url id param, create a Reform form, with that model, use validate the params
 provided by the user with that form, save the params and direct the user to the next step
@@ -111,7 +103,8 @@ your wizard has created, go into `config/routes.rb` and add the following
 
 This will create routes for each of your steps. These will be named routes, named using the following convention.
 
-    <action>_<step_name>_step_for_<controller_singular_name>
+  url: {controller}/{step_name}/:id  {show/update}_{step_name}_step_for_{controller_singular_name}(:id)
+
 
 The routes will point to the corresponding step on the `EventsController` with a get action for the
 show method and a post action for the update method
