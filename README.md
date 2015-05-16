@@ -112,7 +112,7 @@ show method and a post action for the update method
 
 So for the create_step_update method from our example above, the route name would be
 
-    create_step_for_event
+    create_step_for_event(id)
 
 
 ## Contributing
