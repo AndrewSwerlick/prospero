@@ -1,10 +1,10 @@
-require 'functional/fixtures/record'
+require 'functional/fixtures/event'
 
-class TestController < ActionController::Base
+class EventsController < ActionController::Base
   include Prospero::Routes.url_helpers
 
   def model
-    @model ||= Record.new
+    @model ||= super
   end
 
   protected

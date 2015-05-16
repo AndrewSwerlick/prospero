@@ -1,18 +1,18 @@
 require 'spec_helper'
-require 'functional/fixtures/test_controller'
+require 'functional/fixtures/events_controller'
 require 'functional/fixtures/test_wizard'
 require 'mock_adapter'
 
 Prospero::Routes.draw do
-  TestWizard.register_routes_for("test", self)
+  TestWizard.register_routes_for("events", self)
 end
 
-describe TestController do
+describe EventsController do
   let(:wizard){ TestWizard }
 
   describe "base wizard" do
     before do
-      TestController.send(:include, wizard)
+      EventsController.send(:include, wizard)
     end
 
     describe "get create" do
@@ -27,7 +27,7 @@ describe TestController do
       before { post :create_step_update, id: 1}
 
       it "redirects to the next step" do
-        assert_redirected_to "/test/foo/1"
+        assert_redirected_to "/events/foo/1"
       end
 
       it "has updated the model" do
@@ -42,7 +42,7 @@ describe TestController do
         before {get :current, id: 1}
 
         it "redirects to the current step" do
-          assert_redirected_to "/test/foo/1"
+          assert_redirected_to "/events/foo/1"
         end
       end
 
@@ -51,7 +51,7 @@ describe TestController do
         before {get :current, id: 1}
 
         it "redirects to the first step" do
-          assert_redirected_to "/test/create/1"
+          assert_redirected_to "/events/create/1"
         end
       end
     end
@@ -62,7 +62,7 @@ describe TestController do
     before do
       Prospero::Persistence.use_adapter adapter
       wizard.send(:include, Prospero::Persistence)
-      TestController.send(:include, wizard)
+      EventsController.send(:include, wizard)
     end
 
     let(:adapter) {MockAdapter.new }

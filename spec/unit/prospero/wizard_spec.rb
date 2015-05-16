@@ -1,6 +1,12 @@
 require 'spec_helper'
 
 describe Prospero::Wizard do
+  let(:config_block) do
+    Proc.new do
+      step :create
+      step :foo
+    end
+  end
   let(:klass) do
     k = Class.new
     k.class_exec(config_block) do |config|
@@ -30,12 +36,6 @@ describe Prospero::Wizard do
     let(:form){instance.form_for(action)}
 
     describe "with a simple configuration block" do
-      let(:config_block) do
-        Proc.new do
-          step :create
-          step :foo
-        end
-      end
 
       describe "for the show action" do
         let(:action){ :create_step_show }
@@ -68,6 +68,21 @@ describe Prospero::Wizard do
       it "uses the provided class" do
         form.must_be_kind_of CustomCreateStepForm
       end
+    end
+  end
+
+  describe "self.register_routes_for" do
+    let(:routes) do
+      wizard = klass
+      routes = ActionDispatch::Routing::RouteSet.new
+      routes.draw do
+        wizard.register_routes_for("events", self)
+      end
+      routes
+    end
+
+    it "creates the expected routes" do
+      routes.routes.select{|r| r.name == "create_step_for_event"}.count.must_equal 1
     end
   end
 end

@@ -104,7 +104,7 @@ your wizard has created, go into `config/routes.rb` and add the following
 
 This will create routes for each of your steps. These will be named routes, named using the following convention.
 
-    url: {controller}/{step_name}/:id  {step_name}_step_for_{controller_singular_name}(:id)
+    url: {controller}/{step_name}/:id  {step_name}_step_for_{controller_singular_name}
 
 
 The routes will point to the corresponding step on the `EventsController` with a get action for the
@@ -112,7 +112,7 @@ show method and a post action for the update method
 
 So for the create_step_update method from our example above, the route name would be
 
-    create_step_for_event(id)
+    create_step_for_event
 
 
 ## Contributing

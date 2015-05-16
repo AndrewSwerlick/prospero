@@ -14,6 +14,10 @@ module Prospero
       @form ||= form_for(action_name)
     end
 
+    def model
+      controller_name.classify.constantize.find(params[:id])
+    end
+
     def after_step_save
     end
 
@@ -63,8 +67,10 @@ module Prospero
         steps = wizard_configuration[:steps]
         router.instance_exec steps, controller do |steps, controller|
           steps.each do |step|
-            get "#{controller}/#{step[:base_name]}/:id", to: "#{controller}##{step[:show_name]}"
-            post "#{controller}/#{step[:base_name]}/:id", to: "#{controller}##{step[:update_name]}"
+            get "#{controller}/#{step[:base_name]}/:id",
+                to: "#{controller}##{step[:show_name]}", as: "#{step[:base_name]}_step_for_#{controller.singularize}"
+            post "#{controller}/#{step[:base_name]}/:id",
+                to: "#{controller}##{step[:update_name]}"
           end
 
           get "#{controller}/current/:id", to: "#{controller}#current"
