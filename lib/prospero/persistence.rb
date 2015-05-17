@@ -1,20 +1,10 @@
 require 'active_support/core_ext/hash/deep_merge'
+require 'prospero/persistence/param_methods'
+require 'prospero/persistence/form_methods'
 
 module Prospero
   module Persistence
     autoload :ActiveRecordAdapter, 'prospero/persistence/active_record_adapter'
-
-    module ParamMethods
-      def all_params
-        previous_params = adapter.all_params_for(model.id)
-        previous_params.deep_merge(params).except(:id)
-      end
-
-      def params_for(step)
-        adapter.params_for(step, model.id)
-      end
-    end
-
     include ParamMethods
 
     def adapter
@@ -22,13 +12,14 @@ module Prospero
     end
 
     def after_step_save
-      adapter.persist_step_data(params[:id], current_step, next_action, params)
+      adapter.persist_step_data(params[:id], current_step, next_action, form.safe_params)
       super
     end
 
     def form_for(step)
       form = super
-      form.extend ParamMethods
+      form.extend FormMethods
+      form
     end
 
     class << self

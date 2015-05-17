@@ -12,6 +12,8 @@ require 'action_controller'
 require 'action_controller/test_case'
 require 'rails/generators/test_case'
 
+Reform::Form.reform_2_0!
+
 Prospero::Routes = ActionDispatch::Routing::RouteSet.new
 
 class ActiveSupport::TestCase

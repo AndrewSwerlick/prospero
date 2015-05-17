@@ -1,6 +1,15 @@
 class Event
+  include ActiveModel::Model
+
   attr_reader :saved
-  @events = {}
+
+  attr_accessor :start_date_time
+  attr_accessor :name
+  attr_accessor :end_date_time
+
+  def id
+    1
+  end
 
   def save
     @saved = true

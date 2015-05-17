@@ -14,10 +14,24 @@ describe Prospero::Persistence do
         step :foo
       end
 
-      class self::Create < Reform::Form
+      def current_step
+        :create
       end
 
-      class self::Foo < Reform::Form
+      def next_action
+        :foo
+      end
+
+      def form
+        self.class.const_get("Create").new({})
+      end
+
+      class self::Create < Prospero::Form
+        property :foo, virtual: true
+        property :bar, virtual: true
+      end
+
+      class self::Foo < Prospero::Form
       end
     end
   end
@@ -41,7 +55,7 @@ describe Prospero::Persistence do
 
   let(:instance){klass.new}
   let(:adapter) { MockAdapter.new }
-  let(:params){ { id: 1, blah: {foo:"bar" } } }
+  let(:params){ { id: 1, foo:"bar" } }
 
   before {Prospero::Persistence.use_adapter adapter}
 
@@ -55,16 +69,29 @@ describe Prospero::Persistence do
     end
 
     describe "when there are steps persisted for the current model" do
-      before {adapter.persist_step_data(1, :create, nil, blah: {bar: "foo"}) }
+      before {adapter.persist_step_data(1, :create, nil, bar: "foo") }
 
       it "returns a merged hash with params from both" do
         expected = {
-          blah: {
-            bar: "foo",
-            foo: "bar"
-          }
+          bar: "foo",
+          foo: "bar"
         }
         result.must_equal expected
+      end
+    end
+  end
+
+  describe ".after_step_save" do
+    before do
+      instance.form.validate(params)
+      instance.after_step_save
+    end
+
+    describe "when called with params that aren't safe" do
+      let(:params){ {bad_param: "test" } }
+
+      it "does not save the bad data" do
+        adapter.steps.first.params[:bad_param].must_be_nil
       end
     end
   end
@@ -73,10 +100,10 @@ describe Prospero::Persistence do
     let(:step){:create}
     let(:result){instance.params_for(step)}
     describe "when there are steps persisted for the current model" do
-      before {adapter.persist_step_data(1,:create, nil, blah: {bar: "foo"}) }
+      before {adapter.persist_step_data(1,:create, nil, bar: "foo") }
 
       it "returns the step data" do
-        expected = {blah: {bar: "foo"}}
+        expected = {bar: "foo"}
         result.must_equal expected
       end
     end
@@ -91,6 +118,14 @@ describe Prospero::Persistence do
 
     it "returns a form with the .params_form method included" do
       result.respond_to?(:params_for).must_equal true
+    end
+
+    describe "when there are steps persisted for the current model" do
+      before {adapter.persist_step_data(1,:create, nil, bar: "foo") }
+
+      it "returns a form where the data is loaded" do
+        result.bar.must_equal "foo"
+      end
     end
   end
 end

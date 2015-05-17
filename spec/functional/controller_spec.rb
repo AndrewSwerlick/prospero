@@ -24,25 +24,26 @@ describe EventsController do
     end
 
     describe "post create" do
-      before { post :create_step_update, id: 1}
+      before { post :create_step_update, id: 1, name: "House Party"}
 
       it "redirects to the next step" do
-        assert_redirected_to "/events/foo/1"
+        assert_redirected_to "/events/schedule/1"
       end
 
       it "has updated the model" do
         @controller.model.saved.must_equal true
+        @controller.model.name.must_equal "House Party"
       end
     end
 
     describe "get current" do
 
       describe "when the current_step is defined" do
-        around {|test| @controller.stub :current_step, :foo do test.call end}
+        around {|test| @controller.stub :current_step, :schedule do test.call end}
         before {get :current, id: 1}
 
         it "redirects to the current step" do
-          assert_redirected_to "/events/foo/1"
+          assert_redirected_to "/events/schedule/1"
         end
       end
 
