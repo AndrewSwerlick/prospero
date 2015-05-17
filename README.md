@@ -56,17 +56,19 @@ each call to step will define a new step in the wizard process with the name pro
 the first argument.
 
 ### Forms
-Form objects are how Prospero handles validation and persistence logic for each step in your wizard. When the user edits or update's step data, Prospero loads up the associated form for that step. Out of the box, Prospero is optimized to use the excellent [Reform gem](https://github.com/apotonick/reform) from [Nick Sutterer](https://github.com/apotonick), but it will work with any object that exposes the following public methods
+
+Form objects are how Prospero handles validation and persistence logic for each step in your wizard. When the user edits or update's step data, Prospero loads up the associated form for that step. Out of the box, Prospero ships with a class Prospero::Form, which is backed by Reform::Form, from the excellent [Reform gem](https://github.com/apotonick/reform) by [Nick Sutterer](https://github.com/apotonick), but it will work with any object that exposes the following public methods
 
 1. `initialize(model)` - A constructor that takes in a single argument pointing to the model that this form will persist any data to.
 2. `model` - A no arg method which returns the passed in model
 3. `validate(params)` - A method that takes in a hash of parameters and validates that they represent a valid operation
 4. `errors` - A method that returns an ActiveModel::Errors collection of any validation errors
+6. `safe_params` - A method that returns a hash of parameters that are safe to save to the database. Similar to strong_params in a typical rails setup. Will only have values after `form.validate(params)` has been called.
 5. `save` - A method that persists the data back to the model
 
 Prospero looks for form classes inside of the module where your wizard is defined. So in the example above, Prospero will look for the class CreateEvent::Create to generate the create form, and the class CreateEvent::Invite to generate the invite form.
 
-If you choose to create forms using the Reform library, follow the [Reform documentation](https://github.com/apotonick/reform) or our [Reform quickstart](https://github.com/AndrewSwerlick/prospero/wiki/Reform-quickstart). If you're using a different library or creating custom form objects, just ensure the methods above are available and behave as expected.
+If you choose to use the default Prospero::Form class for your forms, follow the [Reform documentation](https://github.com/apotonick/reform) or our [Reform quickstart](https://github.com/AndrewSwerlick/prospero/wiki/Reform-quickstart). If you're using a different library or creating custom form objects, just ensure the methods above are available and behave as expected.
 
 If you use the generator to create your wizard, reform will automatically create a subfolder with the same name where you can store your form classes. You can even have the generator automatically stub out reform forms if you do this.
 
