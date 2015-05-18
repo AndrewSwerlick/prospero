@@ -1,6 +1,7 @@
 require 'active_support/core_ext/hash/deep_merge'
 require 'prospero/persistence/param_methods'
 require 'prospero/persistence/form_methods'
+require 'prospero/persistence/form_model'
 
 module Prospero
   module Persistence
@@ -20,6 +21,10 @@ module Prospero
       form = super
       form.extend FormMethods
       form
+    end
+
+    def form_model
+      FormModel.new(super, all_params)
     end
 
     class << self
