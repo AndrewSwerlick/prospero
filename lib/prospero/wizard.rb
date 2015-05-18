@@ -29,11 +29,7 @@ module Prospero
       step = action_map[action.to_s]
       name = step[:base_name]
       form_class = step[:form] || self.class.const_get("#{name}".classify)
-      form_class.new(form_model)
-    end
-
-    def form_model
-      model
+      form_class.new(model)
     end
 
     def action_map

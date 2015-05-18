@@ -119,14 +119,11 @@ describe Prospero::Persistence do
     it "returns a form with the .params_form method included" do
       result.respond_to?(:params_for).must_equal true
     end
-  end
 
-  describe ".form_model" do
-    let(:result){instance.form_model}
     describe "when there are steps persisted for the current model" do
       before {adapter.persist_step_data(1,:create, nil, bar: "foo") }
 
-      it "returns a form_model where the data is loaded" do
+      it "returns a form where the data is loaded" do
         result.bar.must_equal "foo"
       end
     end
