@@ -1,6 +1,6 @@
 require 'spec_helper'
-require 'functional/fixtures/events_controller'
-require 'functional/fixtures/test_wizard'
+require 'fixtures/events_controller'
+require 'fixtures/test_wizard'
 require 'mock_adapter'
 
 Prospero::Routes.draw do

@@ -15,7 +15,11 @@ module Prospero
     end
 
     def model
-      controller_name.classify.constantize.find(params[:id])
+      params[:id] ? model_class.find(params[:id]) : model_class.new
+    end
+
+    def model_class
+      controller_name.classify.constantize
     end
 
     def after_step_save
