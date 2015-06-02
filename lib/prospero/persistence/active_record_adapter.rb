@@ -32,6 +32,10 @@ module Prospero
       def params_for(step, id)
         WizardStep.find_by(model_id: id, name: step).try(:params)
       end
+
+      def transitions
+        WizardStep.find_by(model_id: id).pluck(:step_name, :continued_to).order(updated_at: :asc)
+      end
     end
   end
 end

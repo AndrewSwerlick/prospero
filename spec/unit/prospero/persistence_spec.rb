@@ -128,4 +128,15 @@ describe Prospero::Persistence do
       end
     end
   end
+
+  describe "furthest_step" do
+    let(:result) { instance.furthest_step}
+
+    describe "when the are no saved steps" do
+      it "must_equal create" do
+        result.must_equal :create
+      end
+    end
+  end
+
 end

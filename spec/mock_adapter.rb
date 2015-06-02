@@ -18,4 +18,8 @@ class MockAdapter
   def params_for(step, id)
     steps.find{|s| s.id == id && s.name == step}.try { |s| s[:params] }
   end
+
+  def transitions
+    steps.map{|s| [s.name, s.continued_to]}
+  end
 end

@@ -22,6 +22,10 @@ module Prospero
       form
     end
 
+    def furthest_step
+      (adapter.transitions.map{|t| t[0]} - adapter.transitions.map{|t| t[1]}).last || steps.first[:base_name]
+    end
+
     class << self
       attr_reader :adapter
 
