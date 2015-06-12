@@ -24,7 +24,7 @@ describe EventsController do
     end
 
     describe "post create" do
-      before { post :create_step_update, id: 1, name: "House Party"}
+      before { post :create_step_update, id: 1, test_wizard_create: {name: "House Party"} }
 
       it "redirects to the next step" do
         assert_redirected_to "/events/schedule/1"
