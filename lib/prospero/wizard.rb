@@ -32,8 +32,14 @@ module Prospero
     def form_for(action)
       step = action_map[action.to_s]
       name = step[:base_name]
-      form_class = step[:form] || self.class.const_get("#{name}".classify)
-      form_class.new(model)
+      form_class = step[:form] || wizard_module.const_get("#{name}".classify)
+      form = form_class.new(model)
+      form.singleton_class.instance_exec(step, model_class.model_name.singular) do |step, route_name|
+        define_method "model_name" do
+          Prospero::ModelName.new(form.class, nil, nil,step, route_name)
+        end
+      end
+      form
     end
 
     def action_map
@@ -70,7 +76,13 @@ module Prospero
       def register_routes_for(controller, router)
         steps = wizard_configuration[:steps]
         router.instance_exec steps, controller do |steps, controller|
-          steps.each do |step|
+          first_step = steps.first
+          get "#{controller}/#{first_step[:base_name]}/(:id)",
+              to: "#{controller}##{first_step[:show_name]}", as: "#{first_step[:base_name]}_step_for_#{controller.singularize}"
+          post "#{controller}/#{first_step[:base_name]}/(:id)",
+              to: "#{controller}##{first_step[:update_name]}"
+
+          steps.drop(1).each do |step|
             get "#{controller}/#{step[:base_name]}/:id",
                 to: "#{controller}##{step[:show_name]}", as: "#{step[:base_name]}_step_for_#{controller.singularize}"
             post "#{controller}/#{step[:base_name]}/:id",

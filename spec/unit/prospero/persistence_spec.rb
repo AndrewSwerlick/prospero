@@ -49,6 +49,9 @@ describe Prospero::Persistence do
         OpenStruct.new(id: 1)
       end
 
+      def model_class
+        Event
+      end
     end
     k
   end

@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'fixtures/event'
 
 describe Prospero::Wizard do
   let(:wizard) do
@@ -65,6 +66,10 @@ describe Prospero::Wizard do
         def model
           {}
         end
+
+        def model_class
+          Event
+        end
       end
     end
 
@@ -78,6 +83,10 @@ describe Prospero::Wizard do
 
         it "it infers the form class based on the name" do
           form.must_be_kind_of klass::Create
+        end
+
+        it "has the correct route key" do
+          form.model_name.route_key.must_equal "create_step_for_event"
         end
       end
 
@@ -136,6 +145,12 @@ describe Prospero::Wizard do
 
     it "creates the expected routes" do
       routes.routes.select{|r| r.name == "create_step_for_event"}.count.must_equal 1
+    end
+
+    it "creates a route for the first step which does not require an id" do
+      routes.routes
+        .select{|r| r.name == "create_step_for_event"}
+        .first.path.optional_names.must_include "id"
     end
   end
 end

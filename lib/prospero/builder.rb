@@ -11,7 +11,9 @@ module Prospero
       base.class_exec(configuration, self) do |config, builder|
 
         define_singleton_method "included" do |base|
-          base.send(:helper_method, :form) if base.kind_of? ActionController::Base
+          if base.kind_of? ActionController::Base
+            base.send(:helper_method, :form)
+          end
         end
 
         define_singleton_method "wizard_configuration" do
@@ -22,17 +24,21 @@ module Prospero
           base.wizard_configuration
         end
 
+        define_method "wizard_module" do
+          base
+        end
+
         builder.steps.each do |st|
           define_method st[:show_name] do
 
           end
 
           define_method st[:update_name] do
-            path = url_for(:controller => controller_name, :action => next_action, :id => params[:id])
             key = form.to_model.model_name.param_key
             if form.validate(params[key] || {})
               form.save
               after_step_save
+              path = url_for(:controller => controller_name, :action => next_action, :id => form.model.id)
               redirect_to path
             end
           end
