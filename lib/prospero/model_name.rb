@@ -1,9 +1,9 @@
 module Prospero
   class ModelName < ActiveModel::Name
-    def initialize(klass, namespace=nil, name=nil, step, route_target)
+    def initialize(klass, namespace=nil, name=nil, step, route_name)
       super(klass, namespace, name)
-      @route_key = "#{step[:base_name]}_step_for_#{route_target}"
-      @singular_route_key = "#{step[:base_name]}_step_for_#{route_target}"
+      @route_key = route_name
+      @singular_route_key = route_name
     end
   end
 end

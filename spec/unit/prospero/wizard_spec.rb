@@ -66,11 +66,14 @@ describe Prospero::Wizard do
         def model
           {}
         end
-
-        def model_class
-          Event
-        end
       end
+
+      wiz = wizard
+      routes = ActionDispatch::Routing::RouteSet.new
+      routes.draw do
+        wiz.register_routes_for("events", self)
+      end
+      routes
     end
 
     let(:form){instance.form_for(action)}
