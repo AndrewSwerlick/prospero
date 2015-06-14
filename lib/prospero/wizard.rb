@@ -73,24 +73,26 @@ module Prospero
         Builder.new(config).build_in(self)
       end
 
-      def register_routes_for(controller, router)
-        steps = wizard_configuration[:steps]
-        router.instance_exec steps, controller do |steps, controller|
+      def register_routes_for(router)
+        router.instance_exec wizard_configuration do |wizard_configuration|
+          steps = wizard_configuration[:steps]
+          route_namespace = wizard_configuration[:route_namespace]
+
           steps.each_with_index do |step, ind|
             id_part = ":id"
             id_part = "(:id)" if ind == 0
 
-            route_name = "#{step[:base_name]}_step_for_#{controller.singularize}"
+            route_name = "#{step[:route_name]}"
 
-            get "#{controller}/#{step[:base_name]}/#{id_part}",
-                to: "#{controller}##{step[:show_name]}", as: route_name
-            post "#{controller}/#{step[:base_name]}/#{id_part}",
-                to: "#{controller}##{step[:update_name]}"
+            get "#{route_namespace}/#{step[:base_name]}/#{id_part}",
+                to: "#{route_namespace}##{step[:show_name]}", as: route_name
+            post "#{route_namespace}/#{step[:base_name]}/#{id_part}",
+                to: "#{route_namespace}##{step[:update_name]}"
 
             step[:route_name] = route_name
           end
 
-          get "#{controller}/current/:id", to: "#{controller}#current"
+          get "#{route_namespace}/current/:id", to: "#{route_namespace}#current"
         end
       end
     end
