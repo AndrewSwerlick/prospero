@@ -4,7 +4,7 @@ require 'fixtures/test_wizard'
 require 'mock_adapter'
 
 Prospero::Routes.draw do
-  TestWizard.register_routes_for("events", self)
+  TestWizard.register_routes_for(self)
 end
 
 describe EventsController do

@@ -4,12 +4,15 @@ require 'fixtures/event'
 describe Prospero::Wizard do
   let(:wizard) do
     Module.new do
+
       include Prospero::Wizard
 
       class self::Create < Prospero::Form; end
       class self::Foo < Prospero::Form; end
 
       configuration do
+        route_namespace :events
+
         step :create
         step :foo
       end
@@ -67,13 +70,6 @@ describe Prospero::Wizard do
           {}
         end
       end
-
-      wiz = wizard
-      routes = ActionDispatch::Routing::RouteSet.new
-      routes.draw do
-        wiz.register_routes_for("events", self)
-      end
-      routes
     end
 
     let(:form){instance.form_for(action)}
@@ -112,6 +108,7 @@ describe Prospero::Wizard do
           class self::CustomCreateStepForm < Prospero::Form; end
 
           configuration do
+            route_namespace :events
             step(:create) { form mod::CustomCreateStepForm }
             step :foo
           end
@@ -131,6 +128,8 @@ describe Prospero::Wizard do
         include Prospero::Wizard
 
         configuration do
+          route_namespace :events
+
           step :create
           step :foo
         end
@@ -141,7 +140,7 @@ describe Prospero::Wizard do
       wiz = wizard
       routes = ActionDispatch::Routing::RouteSet.new
       routes.draw do
-        wiz.register_routes_for("events", self)
+        wiz.register_routes_for(self)
       end
       routes
     end

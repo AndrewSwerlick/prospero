@@ -100,9 +100,24 @@ if validation passes, or return the user to the previous step with error message
 
 ### Routes
 Once you've included your wizard in your controller, the last step is to register routes for the new methods
-your wizard has created, go into `config/routes.rb` and add the following
+your wizard has created.
 
-    CreateEvent.register_routes_for "events", self
+First go back to your wizard definition and add the following.
+
+    module CreateEvent
+      include Prospero::Wizard
+
+      configuration do
+        route_namespace :events
+
+        step :create
+        step :invite
+      end
+    end
+
+The new `routes_namepsace :events` line tells prospero that this wizard is included in the `EventsController` and that routes should be registered under the url "events". Finally go into `config/routes.rb` and add the following
+
+    CreateEvent.register_routes_for self
 
 This will create routes for each of your steps. These will be named routes, named using the following convention.
 

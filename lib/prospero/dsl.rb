@@ -16,14 +16,26 @@ module Prospero
       data[:steps] << step
     end
 
+    def route_namespace(namespace)
+      data[:route_namespace] = namespace
+    end
+
     def configuration
+      finalize_configuration
       data
     end
+
 
     private
 
     def data
       @data ||= {}
+    end
+
+    def finalize_configuration
+      data[:steps].each do |s|
+        s[:route_name] = "#{s[:base_name]}_step_for_#{data[:route_namespace].to_s.singularize}"
+      end
     end
 
     class StepDSL
