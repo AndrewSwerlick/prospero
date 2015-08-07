@@ -1,3 +1,5 @@
+require 'active_model'
+
 class Event
   include ActiveModel::Model
 
