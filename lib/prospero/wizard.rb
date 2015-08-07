@@ -88,6 +88,8 @@ module Prospero
                 to: "#{route_namespace}##{step[:show_name]}", as: route_name
             post "#{route_namespace}/#{step[:base_name]}/#{id_part}",
                 to: "#{route_namespace}##{step[:update_name]}"
+            patch "#{route_namespace}/#{step[:base_name]}/#{id_part}",
+                to: "#{route_namespace}##{step[:update_name]}"
 
             step[:route_name] = route_name
           end
